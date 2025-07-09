@@ -24,7 +24,7 @@ services:
 
 - Nos vamos a una ventana de terminal en nuestro Unraid, pegamos esta línea y enter:
 ```sh
-wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw.githubusercontent.com/unraiders/unposer/refs/heads/main/unposer.xml
+wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw.githubusercontent.com/unraiders/unposer/refs/heads/main/my-unposer.xml
 ```
 - Nos vamos a DOCKER y abajo a la izquierda tenemos el botón "AGREGAR CONTENEDOR" hacemos click y en seleccionar plantilla seleccionamos unposer y botón "Aplicar".
 
