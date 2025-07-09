@@ -13,5 +13,5 @@
   </Overview>
   <Category>Tools:</Category>
   <Config Name="FRONTEND" Target="8080" Default="8080" Mode="tcp" Description="Puerto frontend app" Type="Port" Display="always" Required="true" Mask="false"/>
-  <Config Name="PLANTILLAS" Target="/boot/config/plugins/dockerMan/templates-user" Default="/app/plantillas" Mode="rw" Description="Montaje para guardar las plantillas generadas en nuestra carpeta de plantillas de Unraid." Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="PLANTILLAS" Target="/app/plantillas" Default="/boot/config/plugins/dockerMan/templates-user" Mode="rw" Description="Montaje para guardar las plantillas generadas en nuestra carpeta de plantillas de Unraid." Type="Path" Display="always" Required="true" Mask="false"/>
 </Container>
