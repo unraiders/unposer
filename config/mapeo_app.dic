@@ -1,0 +1,9 @@
+# Mapeo de etiquetas de la plantilla que se rellenan desde la aplicación (no del Docker Compose)
+{
+    'Overview': 'Overview',  # Descripción proporcionada por el usuario
+    'Icon': 'Icon',          # URL del icono seleccionado por el usuario
+    'TemplateURL': 'TemplateURL', # URL del template (si aplica)
+    'Category': 'Category',  # Categoría seleccionada por el usuario
+    'Project': 'Project',    # URL del proyecto o repositorio
+    'Support': 'Support'     # URL de soporte
+}

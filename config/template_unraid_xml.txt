@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name></Name>
+  <Repository></Repository>
+  <Registry></Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support></Support>
+  <Project></Project>
+  <Overview></Overview>
+  <Category></Category>
+  <WebUI></WebUI>
+  <TemplateURL></TemplateURL>
+  <Icon></Icon>
+  <ExtraParams></ExtraParams>
+  <PostArgs></PostArgs>
+  <CPUset/>
+  <DateInstalled>1751196036</DateInstalled>
+  <DonateText></DonateText>
+  <DonateLink></DonateLink>
+  <Requires></Requires>
+<Config Name="ruta_nombre" Target="ruta" Default="" Mode="rw" Description="" Type="Path" Display="always" Required="false" Mask="false"></Config>
+<Config Name="puerto_nombre" Target="puerto" Default="" Mode="tcp" Description="" Type="Port" Display="always" Required="false" Mask="false"></Config>
+<Config Name="variable_nombre" Target="variable" Default="" Mode="" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+<Config Name="etiqueta_nombre" Target="etiqueta" Default="" Mode="" Description="" Type="Label" Display="always" Required="false" Mask="false"></Config>
+<Config Name="dispositvo_nombre" Target="dispositivo" Default="" Mode="" Description="" Type="Device" Display="always" Required="false" Mask="false"></Config>
+  <TailscaleStateDir/>
+</Container>

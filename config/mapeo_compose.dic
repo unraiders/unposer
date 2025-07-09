@@ -1,0 +1,16 @@
+# Mapeo de los campos del docker-compose con las etiquetas de la plantilla de unraid.
+{
+    'container_name': 'Name',
+    'image': 'Repository',
+    'environment': 'Variable',
+    'labels': 'Label',
+    'volumes': 'Path',
+    'ports': 'Port',
+    'devices': 'Device',
+    'command': 'PostArgs',
+    'network_mode': 'Network',
+    'privileged': 'Privileged',
+    'tty': 'ExtraParams',
+    'init': 'ExtraParams',
+    'stdin_open': 'ExtraParams'
+}

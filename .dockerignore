@@ -1,0 +1,17 @@
+# Ignore everything
+*
+
+# Allow only specific files
+!rxconfig.py
+!requirements.txt
+!Caddyfile
+!config/*
+!plantillas
+!unposer/utils/__init__.py
+!unposer/utils/converter.py
+!unposer/views/__init__.py
+!unposer/views/footer.py
+!unposer/views/header.py
+!unposer/__init__.py
+!unposer/unposer.py
+!assets/*
