@@ -14,7 +14,7 @@ services:
     container_name: unposer
     restart: unless-stopped
     ports:
-      - 8080:8080
+      - 25500:25500
     network_mode: bridge
     volumes:
       - /boot/config/plugins/dockerMan/templates-user:/app/plantillas
@@ -29,6 +29,13 @@ services:
 wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw.githubusercontent.com/unraiders/unposer/refs/heads/main/my-unposer.xml
 ```
 - Nos vamos a DOCKER y abajo a la izquierda tenemos el botón "AGREGAR CONTENEDOR" hacemos click y en seleccionar plantilla seleccionamos unposer y botón "Aplicar".
+
+---
+
+---
+
+  > [!IMPORTANT]
+  > Dado que la exportación del frontend se realiza en la compilación de la imagen de momento no podemos cambiar el puerto host y siempre tendrá que trabajar en el 25500 para que funcione el backend instalado en la misma imagen, o sea, no cambiar la asignación de los puertos de 25500:25500.
 
 ---
 
