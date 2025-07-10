@@ -20,6 +20,8 @@ services:
       - /boot/config/plugins/dockerMan/templates-user:/app/plantillas
 ```
 
+---
+
 ### Instalación plantilla en Unraid.
 
 - Nos vamos a una ventana de terminal en nuestro Unraid, pegamos esta línea y enter:
@@ -27,6 +29,21 @@ services:
 wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw.githubusercontent.com/unraiders/unposer/refs/heads/main/my-unposer.xml
 ```
 - Nos vamos a DOCKER y abajo a la izquierda tenemos el botón "AGREGAR CONTENEDOR" hacemos click y en seleccionar plantilla seleccionamos unposer y botón "Aplicar".
+
+---
+
+## Preview Compose 😎
+
+![alt text](https://github.com/unraiders/imagenes/blob/main/unposer_compose.png)
+
+## Preview Opciones 😎
+
+![alt text](https://github.com/unraiders/imagenes/blob/main/unposer_options.png)
+
+## Preview Template 😎
+
+![alt text](https://github.com/unraiders/imagenes/blob/main/unposer_template.png)
+
 
 ## Características Principales
 
@@ -76,7 +93,7 @@ wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw
 - Descarga de plantillas en el contenedor que mapeando la unidad del host /boot/config/plugins/dockerMan/templates-user:/app/plantillas la tendremos disponible para su instalación en Unraid.
 - Nombres de archivo generados automáticamente con la combinación my-<nombre_contenedor>xml.
 
-## Por Qué UNPOSER
+## Porqué UNPOSER?
 
 UNPOSER nace de la necesidad de simplificar la migración de contenedores Docker a Unraid. En lugar de crear manualmente las plantillas XML o modificar configuraciones existentes, UNPOSER automatiza el proceso mientras permite una personalización completa. Ideal para:
 
@@ -84,3 +101,6 @@ UNPOSER nace de la necesidad de simplificar la migración de contenedores Docker
 - Usuarios de Docker que quieren aprovechar la interfaz de Unraid
 - Desarrolladores que necesitan crear plantillas Unraid para sus aplicaciones
 - Entusiastas del homelabbing que gestionan múltiples contenedores
+
+
+Fin.
