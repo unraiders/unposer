@@ -3,7 +3,7 @@ ARG PORT=25500
 
 ARG API_URL
 
-FROM python:3.13 as builder
+FROM python:3.13 AS builder
 
 RUN mkdir -p /app/.web
 RUN python -m venv /app/.venv
