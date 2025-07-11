@@ -1,5 +1,7 @@
 import reflex as rx
+import os
 
+VERSION = os.getenv('VERSION')
 
 def footer() -> rx.Component:
     """Componente de pie de página."""
@@ -11,5 +13,12 @@ def footer() -> rx.Component:
             color="gray.500",
         ),
         rx.icon("heart", size=20, color="red"),
+        rx.text(
+            f"Versión {VERSION}",
+            mt=6,
+            font_size="sm",
+            color="gray.500",
+        ),
         spacing="2",
+        
     )

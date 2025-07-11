@@ -1,8 +1,5 @@
-
-ARG VERSION=0.0.2
-
+ARG VERSION=0.0.3
 ARG PORT=25500
-
 ARG API_URL
 
 FROM python:3.13 AS builder
@@ -10,6 +7,8 @@ FROM python:3.13 AS builder
 RUN mkdir -p /app/.web
 RUN python -m venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
+
+ARG VERSION
 
 WORKDIR /app
 
@@ -36,11 +35,13 @@ FROM python:3.13-slim
 
 RUN apt-get update -y && apt-get install -y caddy mc && rm -rf /var/lib/apt/lists/*
 
+ARG VERSION
 ARG PORT API_URL
 ENV PATH="/app/.venv/bin:$PATH" 
 ENV PORT=$PORT
 ENV REFLEX_API_URL=${API_URL:-http://localhost:$PORT} 
 ENV PYTHONUNBUFFERED=1
+ENV VERSION=${VERSION}
 
 WORKDIR /app
 COPY --from=builder /app /app

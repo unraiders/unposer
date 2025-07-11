@@ -1,5 +1,5 @@
 # Cambios en esta versión
 
 ## Novedades
-- 🎨 Mejorada la estructura / formato del código.  
+- 🚀 Incorporada la versión en el footer de la página.  
 
