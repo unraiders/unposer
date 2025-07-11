@@ -5,6 +5,7 @@
 !rxconfig.py
 !requirements.txt
 !Caddyfile
+!entrypoint.sh
 !config/*
 !plantillas
 !unposer/utils/__init__.py

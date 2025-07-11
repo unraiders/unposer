@@ -32,7 +32,7 @@ RUN REFLEX_API_URL=${API_URL:-http://localhost:$PORT} reflex export --loglevel d
 FROM python:3.13-slim
 
 
-RUN apt-get update -y && apt-get install -y caddy redis-server mc && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get install -y caddy mc && rm -rf /var/lib/apt/lists/*
 
 ARG PORT API_URL
 ENV PATH="/app/.venv/bin:$PATH" PORT=$PORT REFLEX_API_URL=${API_URL:-http://localhost:$PORT} REFLEX_REDIS_URL=redis://localhost PYTHONUNBUFFERED=1
@@ -45,7 +45,7 @@ STOPSIGNAL SIGKILL
 
 EXPOSE $PORT
 
-CMD [ -d alembic ] && reflex db migrate; \
-    caddy start && \
-    redis-server --daemonize yes && \
-    exec reflex run --env prod --backend-only
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]
