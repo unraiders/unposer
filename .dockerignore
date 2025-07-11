@@ -13,6 +13,11 @@
 !unposer/views/__init__.py
 !unposer/views/footer.py
 !unposer/views/header.py
+!unposer/views/compose.py
+!unposer/views/options.py
+!unposer/views/template.py
+!unposer/state/__init__.py
+!unposer/state/MainState.py
 !unposer/__init__.py
 !unposer/unposer.py
 !assets/*
