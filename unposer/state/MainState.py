@@ -239,28 +239,17 @@ class MainState(rx.State):
                         # No seleccionamos automáticamente ningún puerto
                         self.selected_web_port = "No seleccionar puerto"
                 
-                # Si aún no tenemos una URL de soporte, intentamos construirla basada en la imagen
-                if not self.support_url and 'image' in docker_compose_data:
-                    image_name = docker_compose_data['image']
-                    # Intentamos extraer el nombre del repositorio de la imagen
-                    parts = image_name.split('/')
-                    if len(parts) > 1 and not parts[0].startswith('http'):  # Excluir URLs
-                        repo_name = parts[-1].split(':')[0]  # Eliminar el tag si existe
-                        # Construir URL de GitHub o Docker Hub según el caso
-                        if parts[0] in ['ghcr.io', 'docker.pkg.github.com']:
-                            # Es una imagen de GitHub
-                            self.support_url = f"https://github.com/{parts[1]}/{repo_name}/releases"
-                        else:
-                            # Asumimos que es una imagen de Docker Hub
-                            username = parts[0]
-                            self.support_url = f"https://hub.docker.com/r/{username}/{repo_name}"
-                
-                # Si se ha configurado el método de icono como GitHub, buscar imágenes automáticamente
-                if self.icon_method == "github" and self.github_repo_icon_url:
-                    try:
-                        self.search_github_images()
-                    except Exception as e:
-                        yield rx.toast.warning(f"Error al buscar imágenes en GitHub: {str(e)}")
+                # Si aún no tenemos URLs configuradas, intentamos configurarlas desde el compose
+                if not any([self.support_url, self.project_url, self.github_repo_icon_url]):
+                    if self._try_configure_github_urls_from_compose(self.docker_compose_text):
+                        yield rx.toast.success("URLs de GitHub configuradas automáticamente desde el compose.")
+                        
+                        # Si se ha configurado el método de icono como GitHub, buscar imágenes automáticamente
+                        if self.icon_method == "github" and self.github_repo_icon_url:
+                            try:
+                                self.search_github_images()
+                            except Exception as e:
+                                yield rx.toast.warning(f"Error al buscar imágenes en GitHub: {str(e)}")
                 
                 # Marcamos que ya se ha cargado el Docker Compose correctamente
                 self.has_loaded_docker_compose = True
@@ -296,7 +285,7 @@ class MainState(rx.State):
         try:
             if not files or len(files) == 0:
                 return
-                
+            
             file = files[0]
             # Comprueba si file ya es bytes o si es un UploadFile
             if isinstance(file, bytes):
@@ -312,6 +301,10 @@ class MainState(rx.State):
                 if 'image' in compose_data:
                     self.docker_compose_text = compose_content
                     yield rx.toast.success("Archivo Docker Compose válido cargado correctamente.")
+                    
+                    # Intentamos configurar las URLs de GitHub automáticamente
+                    if self._try_configure_github_urls_from_compose(compose_content):
+                        yield rx.toast.success("URLs de GitHub configuradas automáticamente desde el compose.")
                 else:
                     yield rx.toast.error("El archivo cargado no contiene el campo 'image' que es necesario para generar la plantilla.")
             except Exception as e:
@@ -1102,3 +1095,46 @@ class MainState(rx.State):
                         },
             ),
         )
+    
+    def _try_configure_github_urls_from_compose(self, compose_text: str) -> bool:
+        """
+        Intenta extraer y configurar las URLs de GitHub a partir del contenido del compose.
+        
+        Args:
+            compose_text: El contenido del docker-compose
+            
+        Returns:
+            bool: True si se pudieron configurar las URLs, False en caso contrario
+        """
+        try:
+            compose_data = self._converter.parse_docker_compose(compose_text)
+            if 'image' in compose_data:
+                image_name = compose_data['image']
+                # Intentamos extraer el usuario/repositorio de la imagen
+                parts = image_name.split('/')
+                
+                # Si la imagen tiene formato usuario/repositorio
+                if len(parts) >= 2:
+                    # Si es de GitHub
+                    if any(domain in parts[0] for domain in ['ghcr.io', 'docker.pkg.github.com']):
+                        # El formato es ghcr.io/usuario/repo o docker.pkg.github.com/usuario/repo
+                        user_repo = '/'.join(parts[1:2])
+                    else:
+                        # Asumimos que es usuario/repo directamente
+                        user_repo = '/'.join(parts[:2])
+                    
+                    # Limpiamos el nombre del repositorio (quitamos el tag si existe)
+                    user_repo = user_repo.split(':')[0]
+                    
+                    # Configuramos las URLs
+                    base_url = f"https://github.com/{user_repo}"
+                    self.project_url = base_url
+                    self.support_url = f"{base_url}/releases"
+                    self.github_repo_icon_url = base_url
+                    self.icon_method = "github"
+                    
+                    return True
+                    
+            return False
+        except Exception:
+            return False

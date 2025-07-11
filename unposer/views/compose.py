@@ -75,7 +75,7 @@ def compose_tab() -> rx.Component:
                     rx.vstack(
                         rx.hstack(
                             rx.text("Cargar desde un repositorio"),
-                            MainState.create_info_hover("Puedes cargar un Docker Compose desde un repositorio de Github.<br><br>La URL debe ser en formato: https://<registro>/usuario/repositorio"),
+                            MainState.create_info_hover("Puedes cargar un Docker Compose desde un repositorio de Github.<br><br>La URL debe ser en formato: https://github.com/usuario/repositorio"),
                             spacing="1",
                             align="center",
                         ),

@@ -1,7 +1,7 @@
 import reflex as rx
 import os
 
-VERSION = os.getenv('VERSION')
+VERSION = os.getenv('VERSION', 'dev')  # Valor por defecto si no se establece la variable de entorno)
 
 def footer() -> rx.Component:
     """Componente de pie de página."""
