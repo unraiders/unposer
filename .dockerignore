@@ -10,6 +10,8 @@
 !plantillas
 !unposer/utils/__init__.py
 !unposer/utils/converter.py
+!unposer/utils/utils.py
+!unposer/utils/config.py
 !unposer/views/__init__.py
 !unposer/views/footer.py
 !unposer/views/header.py
