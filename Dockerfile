@@ -1,50 +1,64 @@
-ARG VERSION=0.1.0
+# Etapa de build
+FROM alpine:3.21.3 AS builder
+
+ARG VERSION=0.1.1
 ARG PORT=25500
 ARG API_URL
 
-FROM python:3.13 AS builder
-
-RUN mkdir -p /app/.web
-RUN python -m venv /app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
-
-ARG VERSION
+RUN apk update && apk add --no-cache \
+    python3 \
+    py3-pip \
+    curl \
+    bash \
+    nodejs \
+    npm \
+    git \
+    build-base
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
 
 COPY rxconfig.py ./
 RUN reflex init
 
-COPY *.web/bun.lockb *.web/package.json .web/
-RUN if [ -f .web/bun.lockb ]; then cd .web && ~/.local/share/reflex/bun/bin/bun install --frozen-lockfile; fi
-
 COPY . .
 
-ARG PORT API_URL
+RUN REFLEX_API_URL=${API_URL:-http://localhost:$PORT} reflex export --loglevel debug --frontend-only --no-zip \
+    && mv .web/build/client/* /srv/ \
+    && rm -rf .web
 
-RUN REFLEX_API_URL=${API_URL:-http://localhost:$PORT} reflex export --loglevel debug --frontend-only --no-zip && mv .web/build/client/* /srv/ && rm -rf .web
-
-
-
-FROM python:3.13-slim
-
-
-RUN apt-get update -y && apt-get install -y caddy mc && rm -rf /var/lib/apt/lists/*
+# Etapa final
+FROM alpine:3.21.3
 
 ARG VERSION
-ARG PORT API_URL
-ENV PATH="/app/.venv/bin:$PATH" 
+ARG PORT=25500
+ARG API_URL
+
+RUN apk update && apk add --no-cache \
+    python3 \
+    py3-pip \
+    caddy 
+
+WORKDIR /app
+
+COPY Caddyfile .
+COPY rxconfig.py .
+COPY entrypoint.sh .
+COPY unposer ./unposer
+COPY config ./config
+COPY assets ./assets
+COPY plantillas ./plantillas            
+
+COPY requirements.txt .
+RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
+
 ENV PORT=$PORT
-ENV REFLEX_API_URL=${API_URL:-http://localhost:$PORT} 
+ENV REFLEX_API_URL=${API_URL:-http://localhost:$PORT}
 ENV PYTHONUNBUFFERED=1
 ENV VERSION=${VERSION}
 
-WORKDIR /app
-COPY --from=builder /app /app
 COPY --from=builder /srv /srv
 
 STOPSIGNAL SIGKILL
