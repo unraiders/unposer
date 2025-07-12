@@ -49,7 +49,7 @@ COPY entrypoint.sh .
 COPY unposer ./unposer
 COPY config ./config
 COPY assets ./assets
-COPY plantillas ./plantillas            
+# COPY plantillas ./plantillas            
 
 COPY requirements.txt .
 RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
