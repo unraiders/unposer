@@ -16,4 +16,5 @@
   <Category>Tools:</Category>
   <Config Name="FRONTEND" Target="25500" Default="25500" Mode="tcp" Description="Puerto frontend app" Type="Port" Display="always" Required="true" Mask="false"/>
   <Config Name="PLANTILLAS" Target="/app/plantillas" Default="/boot/config/plugins/dockerMan/templates-user" Mode="rw" Description="Montaje para guardar las plantillas generadas en nuestra carpeta de plantillas de Unraid." Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="DEBUG" Target="DEBUG" Default="0|1" Mode="" Description="Habilita el modo Debug en el log. (0 = No / 1 = Si)" Type="Variable" Display="always" Required="true" Mask="false"/>
 </Container>

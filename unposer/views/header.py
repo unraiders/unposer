@@ -10,7 +10,6 @@ def header() -> rx.Component:
         left="1rem",
         ),
 
-        # Selector de modo claro/oscuro (fuera del container para posicionamiento absoluto)
         rx.color_mode.button(
             position="absolute",
             top="1rem",
@@ -18,13 +17,13 @@ def header() -> rx.Component:
         ),
         rx.theme_panel(default_open=False),
         rx.vstack(
-            # Espacio superior
-            rx.box(height="1em"),  # Añade espacio encima del título
+
+            rx.box(height="1em"),
             
             # Cabecera
             rx.heading(
                 "UNPOSER", 
-                size="8",  # Tamaño de fuente 
+                size="8",
                 text_align="center", 
                 font_weight="bold",
             ),

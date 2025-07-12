@@ -4,7 +4,15 @@ Una aplicación web desarrollada con Python y Reflex que simplifica la conversi�
 
 ## ¿Qué hace UNPOSER?
 
-UNPOSER permite a los usuarios de Unraid convertir sus configuraciones de Docker Compose existentes en plantillas XML que pueden ser utilizadas directamente en la interfaz de Unraid. Esto facilita la migración de contenedores Docker y asegura una configuración correcta en el entorno Unraid, disponiendo de icono, enlace web (si lo tiene), etc. en el contenedor de Docker levantado.
+UNPOSER permite a los usuarios de Unraid convertir sus configuraciones de Docker Compose existentes en plantillas XML que pueden ser utilizadas directamente en la interfaz de Unraid. Esto facilita la migración de contenedores Docker y asegura una configuración correcta en el entorno Unraid, disponiendo de icono, enlace web (si lo tiene), URL de soporte, etc. en el contenedor de Docker levantado.
+
+### Configuración variables de entorno
+
+| VARIABLE                | NECESARIA | VERSIÓN | VALOR |
+|:----------------------- |:---------:| :------:| :-------------|
+| DEBUG                   |     ❌    | v0.1.0  | Habilita el modo Debug en el log. (0 = No / 1 = Si) |
+
+La VERSIÓN indica cuando se añadió esa variable o cuando sufrió alguna actualización. Consultar https://github.com/unraiders/unposer/releases
 
 ### Ejemplo docker-compose.yml
 ```yaml
@@ -12,9 +20,11 @@ services:
   unposer:
     image: unraiders/unposer
     container_name: unposer
-    restart: unless-stopped
+    environment:
+      - DEBUG=0    
     ports:
       - 25500:25500
+    restart: unless-stopped
     network_mode: bridge
     volumes:
       - /boot/config/plugins/dockerMan/templates-user:/app/plantillas
@@ -98,7 +108,7 @@ wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw
 - Compatibilidad garantizada con Unraid.
 - Descarga local de plantillas desde el navegador.
 - Descarga de plantillas en el contenedor que mapeando la unidad del host /boot/config/plugins/dockerMan/templates-user:/app/plantillas la tendremos disponible para su instalación en Unraid.
-- Nombres de archivo generados automáticamente con la combinación my-<nombre_contenedor>xml.
+- Nombres de archivo generados automáticamente con la combinación my-<nombre_contenedor>.xml.
 
 ## Porqué UNPOSER?
 

@@ -5,8 +5,12 @@ import os
 import yaml
 import re
 import requests
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from datetime import datetime
+
+from unposer.utils.utils import setup_logger, generate_trace_id
+
+logger = setup_logger(__name__)
 
 # Constantes
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -16,6 +20,8 @@ MAPEO_COMPOSE_PATH = os.path.join(CONFIG_DIR, "mapeo_compose.dic")
 MAPEO_APP_PATH = os.path.join(CONFIG_DIR, "mapeo_app.dic")
 
 class UnraidTemplateConverter:
+    generate_trace_id()
+    
     def __init__(self):
         """Inicializa el conversor con los mapeos de campos."""
 
@@ -37,55 +43,55 @@ class UnraidTemplateConverter:
         """Carga el mapeo de campos de Docker Compose a etiquetas Unraid."""
         try:
             # Verificar si existe el archivo
-            print(f"Verificando archivo en: {MAPEO_COMPOSE_PATH}")
+            logger.debug(f"Verificando archivo en: {MAPEO_COMPOSE_PATH}")
             if os.path.exists(MAPEO_COMPOSE_PATH):
-                print(f"Archivo encontrado en: {MAPEO_COMPOSE_PATH}")
+                logger.debug(f"Archivo encontrado en: {MAPEO_COMPOSE_PATH}")
                 with open(MAPEO_COMPOSE_PATH, "r") as file:
                     content = file.read()
                     self.mapeo_compose = eval(content)
                     return self.mapeo_compose
             
             # Si no se encuentra el archivo, mostramos un error
-            print(f"ERROR: No se encontró el archivo de mapeo obligatorio en {MAPEO_COMPOSE_PATH}")
+            logger.debug(f"ERROR: No se encontró el archivo de mapeo obligatorio en {MAPEO_COMPOSE_PATH}")
             raise FileNotFoundError(f"El archivo de mapeo obligatorio {MAPEO_COMPOSE_PATH} no existe")
         except Exception as e:
-            print(f"Error al cargar el mapeo de compose: {str(e)}")
+            logger.debug(f"Error al cargar el mapeo de compose: {str(e)}")
             raise Exception(f"No se pudo cargar el mapeo desde {MAPEO_COMPOSE_PATH}: {str(e)}")
             
     def _cargar_mapeo_app(self) -> Dict[str, str]:
         """Carga el mapeo de campos de la aplicación a etiquetas Unraid."""
         try:
             # Verificar si existe el archivo
-            print(f"Verificando archivo en: {MAPEO_APP_PATH}")
+            logger.debug(f"Verificando archivo en: {MAPEO_APP_PATH}")
             if os.path.exists(MAPEO_APP_PATH):
-                print(f"Archivo encontrado en: {MAPEO_APP_PATH}")
+                logger.debug(f"Archivo encontrado en: {MAPEO_APP_PATH}")
                 with open(MAPEO_APP_PATH, "r") as file:
                     content = file.read()
                     self.mapeo_app = eval(content)
-                    print(f"Contenido de mapeo_app cargado: {self.mapeo_app}")
+                    logger.debug(f"Contenido de mapeo_app cargado: {self.mapeo_app}")
                     return self.mapeo_app
             
             # Si no se encuentra el archivo, mostramos un error
-            print(f"ERROR: No se encontró el archivo de mapeo obligatorio en {MAPEO_APP_PATH}")
+            logger.debug(f"ERROR: No se encontró el archivo de mapeo obligatorio en {MAPEO_APP_PATH}")
             raise FileNotFoundError(f"El archivo de mapeo obligatorio {MAPEO_APP_PATH} no existe")
         except Exception as e:
-            print(f"Error al cargar el mapeo de app: {str(e)}")
+            logger.debug(f"Error al cargar el mapeo de app: {str(e)}")
             raise Exception(f"No se pudo cargar la plantilla base desde {MAPEO_APP_PATH}: {str(e)}")
 
     def _cargar_template_base(self) -> str:
         """Carga la plantilla base desde el archivo de configuración."""
         try:
-            print(f"Verificando archivo de plantilla en: {TEMPLATE_PATH}")
+            logger.debug(f"Verificando archivo de plantilla en: {TEMPLATE_PATH}")
             if os.path.exists(TEMPLATE_PATH):
-                print(f"Archivo de plantilla encontrado en: {TEMPLATE_PATH}")
+                logger.debug(f"Archivo de plantilla encontrado en: {TEMPLATE_PATH}")
                 with open(TEMPLATE_PATH, "r") as file:
                     return file.read()
             
             # Si no se encuentra el archivo, mostramos un error
-            print(f"ERROR: No se encontró el archivo de plantilla obligatorio en {TEMPLATE_PATH}")
+            logger.debug(f"ERROR: No se encontró el archivo de plantilla obligatorio en {TEMPLATE_PATH}")
             raise FileNotFoundError(f"El archivo de plantilla obligatorio {TEMPLATE_PATH} no existe")
         except Exception as e:
-            print(f"Error al cargar la plantilla base: {str(e)}")
+            logger.debug(f"Error al cargar la plantilla base: {str(e)}")
             raise Exception(f"No se pudo cargar la plantilla base desde {TEMPLATE_PATH}: {str(e)}")
 
     def parse_docker_compose(self, docker_compose_content: str) -> Dict[str, Any]:
@@ -127,11 +133,11 @@ class UnraidTemplateConverter:
                     service['devices'] = [service['devices']]
                 
                 # Imprimir para debug
-                print(f"DEBUG - Dispositivos normalizados: {service['devices']}")
+                logger.debug(f"Dispositivos normalizados: {service['devices']}")
             
             return service
         except Exception as e:
-            print(f"Error al parsear el Docker Compose: {str(e)}")
+            logger.debug(f"Error al parsear el Docker Compose: {str(e)}")
             return {}
 
     def get_github_repo_images(self, repo_url: str) -> List[str]:
@@ -147,7 +153,7 @@ class UnraidTemplateConverter:
             # Formato: https://github.com/{owner}/{repo}
             parts = repo_url.strip("/").split("/")
             if len(parts) < 5:
-                print(f"URL de GitHub inválida: {repo_url}")
+                logger.debug(f"URL de GitHub inválida: {repo_url}")
                 return []
             
             owner = parts[3]
@@ -164,7 +170,7 @@ class UnraidTemplateConverter:
                 response = requests.get(api_url)
                 
             if response.status_code != 200:
-                print(f"Error al acceder a la API de GitHub: {response.status_code}")
+                logger.debug(f"Error al acceder a la API de GitHub: {response.status_code}")
                 return []
             
             # Obtener los datos de la respuesta
@@ -182,7 +188,7 @@ class UnraidTemplateConverter:
             
             return images
         except Exception as e:
-            print(f"Error al obtener imágenes del repositorio: {str(e)}")
+            logger.debug(f"Error al obtener imágenes del repositorio: {str(e)}")
             return []
 
     def generate_unraid_template(self, 
@@ -270,22 +276,22 @@ class UnraidTemplateConverter:
                     template = re.sub(tag_pattern, replacement, template)
             
             # Aplicar mapeo directo de campos de la aplicación a etiquetas XML
-            print(f"DEBUG - mapeo_app actual: {self.mapeo_app}")
-            print(f"DEBUG - app_fields recibidos: {app_fields}")
+            logger.debug(f"mapeo_app actual: {self.mapeo_app}")
+            logger.debug(f"app_fields recibidos: {app_fields}")
             
             if app_fields and self.mapeo_app:
                 for app_key, value in app_fields.items():
-                    print(f"DEBUG - Procesando app_key: {app_key}, value: {value}")
+                    logger.debug(f"Procesando app_key: {app_key}, value: {value}")
                     if app_key in self.mapeo_app and value:
                         unraid_tag = self.mapeo_app[app_key]
-                        print(f"DEBUG - unraid_tag encontrado: '{unraid_tag}'")
+                        logger.debug(f"unraid_tag encontrado: '{unraid_tag}'")
                         if unraid_tag:  # Asegurarse de que no está vacío
                             tag_pattern = f'<{unraid_tag}>(.*?)</{unraid_tag}>'
                             replacement = f'<{unraid_tag}>{value}</{unraid_tag}>'
                             template = re.sub(tag_pattern, replacement, template)
-                            print(f"Aplicando mapeo app: <{unraid_tag}> = {value}")
+                            logger.debug(f"Aplicando mapeo app: <{unraid_tag}> = {value}")
                         else:
-                            print(f"ERROR - El mapeo para {app_key} está vacío")
+                            logger.debug(f"ERROR - El mapeo para {app_key} está vacío")
             
             # Para mantener compatibilidad con el código existente
             # Estos parámetros son redundantes con app_fields, pero se mantienen por compatibilidad
@@ -306,7 +312,7 @@ class UnraidTemplateConverter:
                     webui_url = f'http://[IP]:[PORT:{host_port}]/'
                     template = re.sub('<WebUI>(.*?)</WebUI>', f'<WebUI>{webui_url}</WebUI>', template)
                 except Exception as e:
-                    print(f"Error al configurar WebUI con puerto {web_port}: {str(e)}")
+                    logger.debug(f"Error al configurar WebUI con puerto {web_port}: {str(e)}")
             
             # Generar configuraciones para variables de entorno, volúmenes y puertos
             config_sections = []
@@ -324,20 +330,20 @@ class UnraidTemplateConverter:
             # Procesar labels
             if 'labels' in docker_compose and docker_compose['labels']:
                 # Debug para verificar el formato de las etiquetas
-                print(f"DEBUG - Procesando etiquetas: {docker_compose['labels']}")
+                logger.debug(f"Procesando etiquetas: {docker_compose['labels']}")
                 
                 for label in docker_compose['labels']:
                     if isinstance(label, str) and '=' in label:
                         key, value = label.split('=', 1)
                         # Limpiar posibles comillas en el valor
                         value = value.strip("'\"")
-                        print(f"DEBUG - Agregando etiqueta: {key}={value}")
+                        logger.debug(f"Agregando etiqueta: {key}={value}")
                         config_sections.append(f'  <Config Name="{key}" Target="{key}" Default="" Mode="" Description="" Type="Label" Display="always" Required="false" Mask="false">{value}</Config>')
                     elif isinstance(label, dict):
                         for k, v in label.items():
                             # Limpiar posibles comillas en el valor
                             v = str(v).strip("'\"")
-                            print(f"DEBUG - Agregando etiqueta (dict): {k}={v}")
+                            logger.debug(f"Agregando etiqueta (dict): {k}={v}")
                             config_sections.append(f'  <Config Name="{k}" Target="{k}" Default="" Mode="" Description="" Type="Label" Display="always" Required="false" Mask="false">{v}</Config>')
             
             # Procesar volúmenes
@@ -364,7 +370,7 @@ class UnraidTemplateConverter:
             # Procesar dispositivos
             if 'devices' in docker_compose and docker_compose['devices']:
                 # Debug para verificar el formato de los dispositivos
-                print(f"DEBUG - Procesando dispositivos: {docker_compose['devices']}")
+                logger.debug(f"Procesando dispositivos: {docker_compose['devices']}")
                 
                 for device in docker_compose['devices']:
                     if isinstance(device, str):
@@ -375,17 +381,17 @@ class UnraidTemplateConverter:
                         # Verificar si el dispositivo tiene formato host:container
                         if ':' in device_value:
                             host_device, container_device = device_value.split(':', 1)
-                            print(f"DEBUG - Agregando dispositivo mapeado: {host_device} -> {container_device}")
+                            logger.debug(f"Agregando dispositivo mapeado: {host_device} -> {container_device}")
                             config_sections.append(f'  <Config Name="Dispositivo {device_name}" Target="{container_device}" Default="" Mode="" Description="" Type="Device" Display="always" Required="false" Mask="false">{host_device}</Config>')
                         else:
                             # Caso donde el dispositivo es el mismo en host y contenedor
-                            print(f"DEBUG - Agregando dispositivo directo: {device_value}")
+                            logger.debug(f"Agregando dispositivo directo: {device_value}")
                             config_sections.append(f'  <Config Name="Dispositivo {device_name}" Target="{device_value}" Default="" Mode="" Description="" Type="Device" Display="always" Required="false" Mask="false">{device_value}</Config>')
                     elif isinstance(device, dict):
                         # Caso para formatos más complejos de dispositivos
                         for path_host, path_container in device.items():
                             device_name = path_container.split('/')[-1] if '/' in path_container else path_container
-                            print(f"DEBUG - Agregando dispositivo (dict): {path_host} -> {path_container}")
+                            logger.debug(f"Agregando dispositivo (dict): {path_host} -> {path_container}")
                             config_sections.append(f'  <Config Name="Dispositivo {device_name}" Target="{path_container}" Default="" Mode="" Description="" Type="Device" Display="always" Required="false" Mask="false">{path_host}</Config>')
             
             # Eliminar todas las etiquetas Config existentes
@@ -451,7 +457,7 @@ class UnraidTemplateConverter:
             
             return template
         except Exception as e:
-            print(f"Error al generar la plantilla: {str(e)}")
+            logger.debug(f"Error al generar la plantilla: {str(e)}")
             return ""
 
     def extract_ports(self, docker_compose: Dict[str, Any]) -> List[str]:
