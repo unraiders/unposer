@@ -79,7 +79,7 @@ export function TemplateTab() {
             <ChevronDown size={16} />
           </Button>
           {menuOpen && (
-            <div className="absolute right-0 z-10 mt-1 w-72 rounded-md border bg-popover p-1 shadow-md">
+            <div className="absolute bottom-full right-0 z-10 mb-1 w-72 rounded-md border bg-popover p-1 shadow-md">
               <div className="px-3 pb-1 pt-2 text-xs font-semibold text-muted-foreground">
                 {multiple ? `Este XML (${active?.container_name})` : "Este XML"}
               </div>
