@@ -46,15 +46,15 @@ wget -O /boot/config/plugins/dockerMan/templates-user/my-unposer.xml https://raw
 
 ## Preview Compose 😎
 
-![alt text](https://github.com/unraiders/imagenes/blob/main/unposer_compose.png)
+![alt text](imagenes/unposer_compose.png)
 
 ## Preview Opciones 😎
 
-![alt text](https://github.com/unraiders/imagenes/blob/main/unposer_options.png)
+![alt text](imagenes/unposer_options.png)
 
 ## Preview Template 😎
 
-![alt text](https://github.com/unraiders/imagenes/blob/main/unposer_template.png)
+![alt text](imagenes/unposer_template.png)
 
 
 ## Características Principales
