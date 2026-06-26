@@ -21,3 +21,4 @@ docker-compose.yml
 .DS_Store
 *.md
 plantillas
+imagenes
