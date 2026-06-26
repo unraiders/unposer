@@ -1,0 +1,16 @@
+services:
+  unposerv2:
+    build:
+      context: .
+      args:
+        VERSION: "0.1.0"
+    image: unposerv2
+    container_name: unposerv2
+    environment:
+      - DEBUG=0
+      - VERSION=0.1.0
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    volumes:
+      - /boot/config/plugins/dockerMan/templates-user:/app/plantillas
