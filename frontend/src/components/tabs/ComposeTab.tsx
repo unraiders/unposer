@@ -38,6 +38,7 @@ export function ComposeTab() {
   } = useAppStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
+  const hasVolumes = /^[ \t]*volumes[ \t]*:/m.test(dockerComposeText);
 
   const handleFile = (file: File) => {
     if (!/\.(ya?ml)$/i.test(file.name)) {
@@ -106,8 +107,14 @@ export function ComposeTab() {
           </Button>
         </div>
         <div className="flex items-center gap-2 pt-1">
-          <Switch checked={hostPathsToAppdata} onCheckedChange={toggleAppdataPaths} />
-          <span className="text-sm text-muted-foreground">
+          <Switch
+            checked={hostPathsToAppdata}
+            onCheckedChange={toggleAppdataPaths}
+            disabled={!hasVolumes}
+          />
+          <span
+            className={`text-sm ${hasVolumes ? "text-muted-foreground" : "text-muted-foreground/50"}`}
+          >
             Cambiar todos los host paths a /mnt/user/appdata
           </span>
           <InfoHover text="Cuidado!!! esto sustituye todas las rutas host del compose a: <b>/mnt/user/appdata/&lt;nombre_contenedor&gt;&lt;ruta_contenedor&gt;</b>, asegúrate que todas las rutas son correctas. Desactívalo para restaurar el original." />
