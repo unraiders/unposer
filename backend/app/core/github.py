@@ -202,6 +202,20 @@ def _compose_image_grade(compose_text: str, owner: str, repo: str) -> int:
     return max((_image_match_grade(img, owner, repo) for img in _iter_service_images(raw)), default=0)
 
 
+def _any_service_has_key(compose_text: str, key: str) -> bool:
+    """¿Algún servicio del compose define la clave indicada (p. ej. environment)?"""
+    try:
+        raw = yaml.safe_load(compose_text)
+    except Exception:
+        return False
+    if not isinstance(raw, dict):
+        return False
+    services = raw.get("services")
+    if not isinstance(services, dict):
+        return False
+    return any(isinstance(svc, dict) and key in svc for svc in services.values())
+
+
 # --- Puntuación de candidatos ------------------------------------------------
 
 def _path_score(path: str) -> int:
@@ -240,7 +254,19 @@ def _score_candidate(path: str, compose_text: str, owner: str, repo: str) -> Opt
         return None
     grade = _compose_image_grade(compose_text, owner, repo)
     priority_pts = {1: 50, 2: 20}.get(priority, 0)
-    return grade * 1000 + priority_pts + _path_score(path)
+
+    # Preferencia fuerte por composes con environment: (variables inline que sí
+    # podemos convertir) frente a env_file: (un .env externo que no tenemos).
+    # Va por debajo de la coincidencia imagen<->repo (x1000) pero por encima del
+    # resto de señales, para desempatar entre composes del mismo contenedor.
+    if _any_service_has_key(compose_text, "environment"):
+        env_pts = 200
+    elif _any_service_has_key(compose_text, "env_file"):
+        env_pts = -200
+    else:
+        env_pts = 0
+
+    return grade * 1000 + env_pts + priority_pts + _path_score(path)
 
 
 def select_best_compose(
@@ -477,9 +503,15 @@ def load_docker_compose_from_github(repo_url: str) -> dict:
     candidates = _collect_priority_candidates(raw_base_url, branch, owner, repo)
     best = select_best_compose(candidates, owner, repo)
 
-    # 2. Si el mejor de las rutas NO coincide con la imagen del repo, ampliamos la
-    #    búsqueda (README + árbol) buscando una coincidencia mejor.
-    need_more = best is None or _compose_image_grade(best[2], owner, repo) == 0
+    # 2. Ampliamos la búsqueda (README + árbol) si el mejor candidato de las rutas
+    #    no coincide con la imagen del repo, o si NO trae environment: (puede existir
+    #    en el README u otra ruta una versión con environment, preferible a env_file).
+    best_has_env = best is not None and _any_service_has_key(best[2], "environment")
+    need_more = (
+        best is None
+        or _compose_image_grade(best[2], owner, repo) == 0
+        or not best_has_env
+    )
     if need_more:
         extra: List[Tuple[str, str]] = list(candidates)
 
