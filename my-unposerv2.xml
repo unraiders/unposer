@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>unposerv2</Name>
+  <Repository>unraiders/unposerv2:develop</Repository>
+  <Registry>https://hub.docker.com/r/unraiders/unposerv2/</Registry>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/unraiders/unposerv2/releases</Support>
+  <Project>https://github.com/unraiders/unposerv2</Project>
+  <Icon>https://raw.githubusercontent.com/unraiders/unposerv2/develop/frontend/public/unposer-logo-trans.png</Icon>
+  <Overview>
+    Convierte tus docker-compose a plantillas de Unraid, con soporte multiservicio (un XML por servicio), editor integrado y descarga local o a la carpeta de plantillas.
+  </Overview>
+  <WebUI>http://[IP]:[PORT:8000]</WebUI>
+  <Category>Tools:</Category>
+  <Config Name="WebUI" Target="8000" Default="8000" Mode="tcp" Description="Puerto de la interfaz web de UNPOSER v2." Type="Port" Display="always" Required="true" Mask="false">8000</Config>
+  <Config Name="PLANTILLAS" Target="/app/plantillas" Default="/boot/config/plugins/dockerMan/templates-user" Mode="rw" Description="Montaje para guardar las plantillas generadas en tu carpeta de plantillas de Unraid." Type="Path" Display="always" Required="true" Mask="false">/boot/config/plugins/dockerMan/templates-user</Config>
+  <Config Name="DEBUG" Target="DEBUG" Default="0" Mode="" Description="Habilita el modo Debug en el log. (0 = No / 1 = Si)" Type="Variable" Display="always" Required="false" Mask="false">0</Config>
+</Container>
