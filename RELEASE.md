@@ -1,5 +1,9 @@
 # Cambios en esta versión
 
+## ✨ Novedades
+
+- **El control «Cambiar todos los host paths a /mnt/user/appdata» se deshabilita si el compose no tiene `volumes:`.** Al cargar o editar el compose se comprueba si existe alguna clave `volumes:`; si no hay ninguna, el interruptor queda inactivo (no hay rutas host que convertir) y su etiqueta se atenúa.
+
 ## 🐞 Correcciones
 
 - **Selección del docker-compose en repos que usan `env_file`.** Cuando el compose principal de un repo coincidía con su imagen pero usaba `env_file:` (un `.env` externo que no tenemos), se elegía ese y no se generaban variables. Ahora, en ese caso, la búsqueda también consulta el README y el árbol del repo para encontrar una versión con `environment:`.
