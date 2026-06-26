@@ -107,6 +107,54 @@ def test_invalid_candidate_is_ignored():
     assert select_best_compose(candidates, "user", "foo") is None
 
 
+# --- Preferencia environment vs env_file ------------------------------------
+
+ENVIRONMENT_COMPOSE = """services:
+  app:
+    image: user/foo
+    environment:
+      - TZ=Europe/Madrid
+"""
+
+ENV_FILE_COMPOSE = """services:
+  app:
+    image: user/foo
+    env_file:
+      - .env
+"""
+
+
+def test_environment_preferred_over_env_file_same_image():
+    # Mismo contenedor (misma imagen) y misma ubicación: gana el de environment,
+    # aunque el de env_file esté en la raíz canónica.
+    candidates = [
+        ("docker-compose.yml", ENV_FILE_COMPOSE),
+        ("docker/docker-compose.yml", ENVIRONMENT_COMPOSE),
+    ]
+    best = select_best_compose(candidates, "user", "foo")
+    assert best is not None
+    assert best[1] == "docker/docker-compose.yml"
+    assert "environment:" in best[2]
+
+
+def test_image_match_still_dominates_env_file():
+    # Un compose con env_file pero que coincide con la imagen del repo gana a uno
+    # con environment de una imagen ajena: la imagen sigue siendo dominante.
+    other = """services:
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_PASSWORD=x
+"""
+    candidates = [
+        ("docker-compose.yml", other),
+        ("examples/docker-compose.yml", ENV_FILE_COMPOSE),
+    ]
+    best = select_best_compose(candidates, "user", "foo")
+    assert best is not None
+    assert best[1] == "examples/docker-compose.yml"  # coincide con user/foo
+
+
 # --- README puntuado --------------------------------------------------------
 
 README_TWO_BLOCKS = """
