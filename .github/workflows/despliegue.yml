@@ -143,7 +143,7 @@ jobs:
           build-args: |
             VERSION=${{ steps.meta.outputs.final_version }}
           tags: |
-            unraiders/unposerv2:${{ steps.meta.outputs.final_version }}
-            unraiders/unposerv2:${{ steps.meta.outputs.docker_tag }}
+            unraiders/unposer:${{ steps.meta.outputs.final_version }}
+            unraiders/unposer:${{ steps.meta.outputs.docker_tag }}
             ghcr.io/${{ env.REPO_LOWER }}:${{ steps.meta.outputs.final_version }}
             ghcr.io/${{ env.REPO_LOWER }}:${{ steps.meta.outputs.docker_tag }}

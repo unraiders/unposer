@@ -20,7 +20,7 @@ FROM python:3.13-slim AS runtime
 LABEL maintainer="unraiders"
 LABEL description="Convierte archivos Docker Compose en plantillas XML compatibles con Unraid, con soporte multiservicio, editor integrado y descarga local o a la carpeta de plantillas."
 # Vincula la imagen de GHCR con el repositorio (pestaña Packages del repo).
-LABEL org.opencontainers.image.source="https://github.com/unraiders/unposerv2"
+LABEL org.opencontainers.image.source="https://github.com/unraiders/unposer"
 
 WORKDIR /app
 

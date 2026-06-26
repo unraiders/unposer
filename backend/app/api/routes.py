@@ -1,4 +1,4 @@
-"""Endpoints REST de la API de unposerv2."""
+"""Endpoints REST de la API de unposer."""
 import io
 import os
 import re

@@ -1,11 +1,11 @@
 services:
-  unposerv2:
+  unposer:
     build:
       context: .
       args:
         VERSION: "0.1.0"
-    image: unposerv2
-    container_name: unposerv2
+    image: unposer
+    container_name: unposer
     environment:
       - DEBUG=0
       - VERSION=0.1.0

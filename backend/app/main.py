@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app import config
 from app.api.routes import router
 
-app = FastAPI(title="UNPOSER v2", version=config.VERSION)
+app = FastAPI(title="UNPOSER", version=config.VERSION)
 app.include_router(router)
 
 
