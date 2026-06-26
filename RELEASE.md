@@ -1,5 +1,5 @@
 # Cambios en esta versión
 
-## ✨ Novedades
+## 🔧 Mejoras
 
-- **El control «Cambiar todos los host paths a /mnt/user/appdata» se deshabilita si el compose no tiene `volumes:`.** Al cargar o editar el compose se comprueba si existe alguna clave `volumes:`; si no hay ninguna, el interruptor queda inactivo (no hay rutas host que convertir) y su etiqueta se atenúa.
+- **El menú «Descargar Plantilla» se despliega hacia arriba.** Al estar el botón en la parte baja de la pantalla, el menú se abría hacia abajo y sus opciones quedaban cortadas. Ahora se ancla por encima del botón para mostrarse completo.
